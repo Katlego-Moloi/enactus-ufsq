@@ -195,12 +195,14 @@ export default function AdminDashboard() {
   // Export applications as CSV
   const exportApplicationsCSV = () => {
     const apps = getApplications()
-    const headers = ["Name", "Email", "Student Number", "Faculty", "Position", "Motivation", "Date", "Reviewed"]
+    const headers = ["Name", "Email", "Student Number", "Faculty", "Year of Study", "Position", "Skills", "Motivation", "Date", "Reviewed"]
     const rows = apps.map((app) => {
+      const isGeneralMember = app.positionId === "general-member"
       const position = positions.find((p) => p.id === app.positionId)
       return [
-        app.name, app.email, app.studentNumber, app.faculty,
-        position?.title || "Unknown", app.motivation.replace(/,/g, ";"),
+        app.name, app.email, app.studentNumber, app.faculty, app.yearOfStudy || "",
+        isGeneralMember ? "General Member" : (position?.title || "Unknown"),
+        (app.skills || "").replace(/,/g, ";"), app.motivation.replace(/,/g, ";"),
         app.createdAt.toLocaleDateString(), app.reviewed ? "Yes" : "No",
       ].join(",")
     })
@@ -515,12 +517,19 @@ export default function AdminDashboard() {
                       </TableRow>
                     ) : (
                       getApplications().map((app) => {
+                        const isGeneralMember = app.positionId === "general-member"
                         const position = positions.find((p) => p.id === app.positionId)
                         return (
                           <TableRow key={app.id}>
                             <TableCell className="font-medium">{app.name}</TableCell>
                             <TableCell>{app.email}</TableCell>
-                            <TableCell>{position?.title || "Unknown"}</TableCell>
+                            <TableCell>
+                              {isGeneralMember ? (
+                                <span className="text-[#F5A800] font-medium">General Member</span>
+                              ) : (
+                                position?.title || "Unknown"
+                              )}
+                            </TableCell>
                             <TableCell>{app.createdAt.toLocaleDateString()}</TableCell>
                             <TableCell>
                               <Badge variant={app.reviewed ? "default" : "secondary"} className={app.reviewed ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}>
