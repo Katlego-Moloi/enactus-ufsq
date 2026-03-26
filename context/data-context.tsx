@@ -95,7 +95,7 @@ export interface Application {
   studentNumber: string
   faculty: string
   yearOfStudy: string
-  positionId: string
+  positionId: string // "general-member" for general membership applications
   motivation: string
   skills: string
   reviewed: boolean
